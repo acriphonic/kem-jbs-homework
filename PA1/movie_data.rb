@@ -44,11 +44,12 @@ class MovieData
 		}
 	end
 
-	
-
 	def self.popularity(movie_id)
+		# finds the movie object from array
 	 	m = $movie_array[movie_id - 1]
+	 	# makes sure the popularity_array has been generated
 	 	popularity_list
+	 	# returns index + 1 for its rank
 	 	return $popularity_array.index(m) + 1
 	end
 
@@ -87,24 +88,33 @@ class MovieData
 	end
 
 	def self.most_similar(u)
+		# creates a new array to hold non-zero compatibility-mates
 		sim_array = Array.new
+		# for each user of site, runs similarity method
 		$user_array.each {|user|
 			simscore = similarity(u, user)
 			if simscore > 0
+				# if their similarity is above zero, added to array
 				sim_array << [user, simscore]
 			end
 		}
+		# sort array from highest compatibility to least
 		sim_array.sort! {|y, x|
 			x[1] <=> y[1]
 		}
+		# return top five matches (minus oneself) as solution
 		return sim_array[1..5]
 	end
 
+	# prepatory method calls
 	load_data
 	popularity_list
+	# prints top 10 spots in popularity array
 	puts $popularity_array[0..9]
+	# prints bottom 10 spots in popularity array
 	puts $popularity_array[($total_movies - 10)..($total_movies - 1)]
+	# grabs user 1 from user array
 	u1 = $user_array[0]
+	# prints most similar users to user 1
 	puts most_similar(u1)
-
 end
