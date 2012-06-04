@@ -1,0 +1,56 @@
+Vakarian:kem-jbs-homework Kinu$ ruby movie_data.rb
+film 50 with popularity 2541
+#<Movie:0x007fd3a28b66e0>
+film 100 with popularity 2111
+#<Movie:0x007fd3a28a53b8>
+film 181 with popularity 2032
+#<Movie:0x007fd3a28a4f08>
+film 258 with popularity 1936
+#<Movie:0x007fd3a28b06a0>
+film 174 with popularity 1786
+#<Movie:0x007fd3a28ad680>
+film 127 with popularity 1769
+#<Movie:0x007fd3a2036ad8>
+film 286 with popularity 1759
+#<Movie:0x007fd3a202b7c8>
+film 1 with popularity 1753
+#<Movie:0x007fd3a28961b0>
+film 98 with popularity 1673
+#<Movie:0x007fd3a28956c0>
+film 288 with popularity 1645
+#<Movie:0x007fd3a28a4328>
+film 1562 with popularity 1
+#<Movie:0x007fd3a28afa48>
+film 1348 with popularity 1
+#<Movie:0x007fd3a2887ca0>
+film 1561 with popularity 1
+#<Movie:0x007fd3a287ffa0>
+film 1486 with popularity 1
+#<Movie:0x007fd3a204bca8>
+film 1559 with popularity 1
+#<Movie:0x007fd3a20282d0>
+film 1678 with popularity 1
+#<Movie:0x007fd3a20539f8>
+film 1557 with popularity 1
+#<Movie:0x007fd3a2872008>
+film 1601 with popularity 1
+#<Movie:0x007fd3a2063740>
+film 1546 with popularity 1
+#<Movie:0x007fd3a28a1fd8>
+film 1548 with popularity 1
+#<Movie:0x007fd3a205c6c0>
+916
+#<Viewer:0x007fd3a282c6e8>
+30.092165898617466
+864
+#<Viewer:0x007fd3a28b1848>
+28.38862559241706
+92
+#<Viewer:0x007fd3a28a33d8>
+28.30957230142572
+301
+#<Viewer:0x007fd3a2895710>
+28.0392156862745
+268
+#<Viewer:0x007fd3a2038e28>
+27.87472035794177
