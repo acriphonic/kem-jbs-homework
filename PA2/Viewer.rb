@@ -1,8 +1,8 @@
 class Viewer
 	
 	# object fields
-	@user_id
-	@moviehash
+	attr_accessor :user_id, :age, :sex, :occupation, :zip
+	attr_reader :moviehash
 	@ratingsum
 	@moviepop
 
@@ -24,16 +24,6 @@ class Viewer
 	# returns average movie rating
 	def avg_rating
 		@ratingsum / @moviepop
-	end
-
-	# accessor method
-	def get_id
-		@user_id
-	end
-
-	# accessor method
-	def get_movies
-		@moviehash
 	end
 
 	# overrides to string

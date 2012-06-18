@@ -1,0 +1,67 @@
+Vakarian:PA2 Kinu$ ruby MovieSearchDemo.rb
+displaying all sci-fi movies released in 1996
+Took 0.283194 seconds
+Star Trek: First Contact (1996)
+#<Movie:0x007fa1f20abea0>
+Ghost in the Shell (Kokaku kidotai) (1995)
+#<Movie:0x007fa202027488>
+Mars Attacks! (1996)
+#<Movie:0x007fa1f20c7768>
+Mystery Science Theater 3000: The Movie (1996)
+#<Movie:0x007fa1f20c4680>
+Lawnmower Man 2: Beyond Cyberspace (1996)
+#<Movie:0x007fa1f2081f60>
+Independence Day (ID4) (1996)
+#<Movie:0x007fa1f2040100>
+Island of Dr. Moreau, The (1996)
+#<Movie:0x007fa1f203ddb0>
+Escape from L.A. (1996)
+#<Movie:0x007fa20205ff40>
+Nutty Professor, The (1996)
+#<Movie:0x007fa202038788>
+Hellraiser: Bloodline (1996)
+#<Movie:0x007fa202040c08>
+Unforgettable (1996)
+#<Movie:0x007fa1f202fb98>
+Barb Wire (1996)
+#<Movie:0x007fa20203e728>
+Solo (1996)
+#<Movie:0x007fa1f209d210>
+Arrival, The (1996)
+#<Movie:0x007fa1f208c1b8>
+Visitors, The (Visiteurs, Les) (1993)
+#<Movie:0x007fa202038058>
+displaying top 5 most viewed movies by college age females
+Took 0.093337 seconds
+Scream (1996)
+#<Movie:0x007fa1f20c0828>
+31
+Contact (1997)
+#<Movie:0x007fa202026600>
+22
+Liar Liar (1997)
+#<Movie:0x007fa1f20c5e18>
+22
+Star Wars (1977)
+#<Movie:0x007fa1f2049818>
+20
+Return of the Jedi (1983)
+#<Movie:0x007fa1f20c1548>
+20
+displaying top 5 most viewed movies by college age males
+Took 0.126502 seconds
+Scream (1996)
+#<Movie:0x007fa1f20c0828>
+54
+Return of the Jedi (1983)
+#<Movie:0x007fa1f20c1548>
+47
+Star Wars (1977)
+#<Movie:0x007fa1f2049818>
+46
+Pulp Fiction (1994)
+#<Movie:0x007fa1f20af528>
+45
+Twelve Monkeys (1995)
+#<Movie:0x007fa1f20c2268>
+43

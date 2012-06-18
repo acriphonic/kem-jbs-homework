@@ -1,15 +1,15 @@
 class Movie
 
 	#object fields
-	@movie_id
-	@raterhash
-	@popularity
+	attr_accessor :movie_id, :genre, :release_date, :popularity, :title
+	attr_reader :raterhash
 	@ratingcount
 
 	# constructor
 	def initialize(movie_id)
 		@movie_id = movie_id
-		@raterhash = Hash.new()
+		@genre = Array.new
+		@raterhash = Hash.new
 		@popularity = 0
 		@ratingcount = 0
 	end
@@ -26,23 +26,8 @@ class Movie
 		return (@popularity / @ratingcount)
 	end
 
-	# accessor method
-	def popularity
-		return @popularity
-	end
-
-	# accessor method
-	def movie_id
-		@movie_id
-	end
-
-	# accessor method
-	def get_viewers
-		@raterhash
-	end
-
 	# override to string
 	def to_s
-		puts "film #{@movie_id} with popularity #{@popularity}"
+		puts @title
 	end
 end
