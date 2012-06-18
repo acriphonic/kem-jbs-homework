@@ -5,20 +5,21 @@ require './MovieTest'
 class MovieData
 
 	# fields
-	@user_array
-	@movie_array
+	attr_reader :viewer_hash, :movie_hash, :total_ratings
 	@popularity_array
-	@total_ratings
-	@total_users
-	@total_movies
+	@genre_array
+
+	# saved filepaths
 	@trainingfile
 	@testingfile
+	@viewerfile
+	@moviefile
+	@genrefile
 
 	# constructor
 	def initialize(filepath, fileset = nil)
-		@user_array = Array.new
-		@movie_array = Array.new
-		@popularity_array = Array.new
+		@viewer_hash = Hash.new
+		@movie_hash = Hash.new
 		@total_ratings = 0
 		if fileset.nil?
 			@trainingfile = filepath + "/u.data"
@@ -26,8 +27,9 @@ class MovieData
 			@trainingfile = filepath + "/" + fileset.to_s + ".base"
 			@testingfile = filepath + "/" + fileset.to_s + ".test"
 		end
-		puts @trainingfile
-		puts @testingfile
+		@viewerfile = filepath + "/u.user"
+		@moviefile = filepath + "/u.item"
+		@genrefile = filepath + "/u.genre"
 	end
 
 	# processes file to create necessary data structures
@@ -36,26 +38,62 @@ class MovieData
 		File.open(@trainingfile).each_line do |line|
 			# split line data into relevant variables
 			user_id, movie_id, r, timestamp = line.split
-			user_id = user_id.to_i
-			movie_id = movie_id.to_i
-			r = r.to_i
 			# create new user if not found, else recall user
-			v = @user_array[user_id] ||= Viewer.new(user_id)
+			v = @viewer_hash[user_id.to_i] ||= Viewer.new(user_id.to_i)
 			# create new movie if not found, else recall movie
-			m = @movie_array[movie_id] ||= Movie.new(movie_id)
+			m = @movie_hash[movie_id.to_i] ||= Movie.new(movie_id.to_i)
 			# add user to movie's information
-			m.add_rating(v, r)
+			m.add_rating(v, r.to_i)
 			# add movie and rating to user's information
-			v.add_movie(m, r)
+			v.add_movie(m, r.to_i)
 			# increment total rating count
 			@total_ratings += 1
+		end
+	end
+
+	# adds information to viewer objects from u.user
+	def populate_viewers
+		File.open(@viewerfile).each_line do |line|
+			user_id, age, sex, occupation, zip = line.split("|")
+			u = viewer_hash[user_id.to_i]
+			u.age = age.to_i
+			u.sex = sex
+			u.occupation = occupation
+			u.zip = zip.to_i
+		end
+	end
+
+	# adds information to movie objects from u.item
+	def populate_movies
+		# create genre key
+		genre_key
+		# open file with movie data and go through line by line
+		File.open(@moviefile).each_line do |line|
+			temp = line.force_encoding("iso-8859-1").split(/[|]+/)
+			m = movie_hash[temp[0].to_i]
+			m.title = temp[1]
+			m.release_date = temp[2].split("-").last.to_i
+			(4..22).each do |i|
+				if temp[i].to_i == 1
+					m.genre << (i - 4)
+				end
+			end
+		end
+	end
+
+	# creates and stores genre key
+	def genre_key
+		@genre_array = Array.new
+		File.open(@genrefile).each_line do |line|
+			genre, genre_id = line.split("|")
+			@genre_array[genre_id.to_i] = genre
 		end
 	end
 
 	# returns the popularity of a given movie
 	def popularity(movie_id)
 		# finds the movie object from array
-	 	m = @movie_array[movie_id]
+	 	m = @movie_hash[movie_id]
 	 	# makes sure the popularity_array has been generated
 	 	@popularity_array ||= popularity_list
 	 	# returns index + 1 for its rank
@@ -66,12 +104,8 @@ class MovieData
 	# a movie that has been seen 500 times with all ones is equally popular to
 	# a movie seen 100 times with all fives... imperfect but workable
 	def popularity_list
-		# duplicates the movie array so that call by index for movies is intact
-		@popularity_array = @movie_array.dup
-		# removes null first element (no movie "0") before sorting
-		@popularity_array.shift
 		# sorts by object-contained popularity score
-		@popularity_array.sort_by! { |m| m.popularity }
+		@popularity_array = @movie_hash.sort_by { |m| m.popularity }
 	end
 
 	# similarity in this context means "likelihood of going to a movie together"
@@ -80,8 +114,8 @@ class MovieData
 	# seen the same movie even if they disagree
 	def similarity(user1, user2)
 		# assign each movie rating hash to local variable
-		m1 = user1.get_movies
-		m2 = user2.get_movies
+		m1 = user1.moviehash
+		m2 = user2.moviehash
 		# similarity starts at zero by default
 		similarity = 0
 		# create an array of their overlapping keys
@@ -103,7 +137,7 @@ class MovieData
 		# creates a new array to hold non-zero compatibility-mates
 		sim_array = Array.new
 		# for each user of site, runs similarity method
-		@user_array.each do |user|
+		@viewer_hash.each do |user|
 			simscore = similarity(u, user)
 			if simscore > 0
 				# if their similarity is above zero, added to array
@@ -111,7 +145,7 @@ class MovieData
 			end
 		end
 		# sort array from highest compatibility to least
-		sim_array.sortby! { |x| x[1] }
+		sim_array.sort_by! { |x| x[1] }
 		# return top five matches (minus oneself) as solution
 		return sim_array[1..5]
 	end
@@ -119,18 +153,16 @@ class MovieData
 	# returns the rating a user gave a movie
 	def rating(u, m)
 		# will return 0 if no rating found
-		if u.get_movies[m].nil?
+		if u.moviehash[m].nil?
 			return 0.0
 		else
-			return u.get_movies[m]
+			return u.moviehash[m]
 		end
 	end
 
 	# prediction algorithm
 	def predict(u, m)
 		# intialize local variables
-		# u = @user_array[u]
-		# m = @movie_array[m]
 		ratingpool = 0.0
 		ratingcount = 0.0
 		# checks the viewers of given movie for compatibility with u higher than 20
@@ -151,12 +183,12 @@ class MovieData
 
 	# returns an array of movies a user has watched
 	def movies(u)
-		u.get_movies.keys
+		u.moviehash.keys
 	end
 
 	# returns all viewers of a given movie
 	def viewers(m)
-		m.get_viewers.keys
+		m.viewerhash.keys
 	end
 
 	# runs prediction tests of k items
@@ -170,8 +202,8 @@ class MovieData
 		File.open(@testingfile).each_line do |line|
 			# split line into relevant data variables, sanitize
 			user_id, movie_id, r, timestamp = line.split
-			u = @user_array[user_id.to_i] ||= Viewer.new(user_id.to_i)
-			m = @movie_array[movie_id.to_i] ||= Movie.new(movie_id.to_i)
+			u = @viewer_hash[user_id.to_i] ||= Viewer.new(user_id.to_i)
+			m = @movie_hash[movie_id.to_i] ||= Movie.new(movie_id.to_i)
 			# add to array for MovieTest
 			testarray[i] = [u, m, r.to_i, predict(u,m)]
 			# condition to break at k lines
@@ -183,11 +215,38 @@ class MovieData
 		# generates new movietest object
 		mt = MovieTest.new(testarray)
 	end
-end
 
-z = MovieData.new("ml-100k", :u1)
-z.load_data
-z.run_test(1)
-z.run_test(10)
-z.run_test(100)
-z.run_test
+	# returns array of movies that matches title, genre, year
+	def find_movies(criteria)
+		populate_movies
+		results = @movie_hash.dup
+		if !criteria["genre"].nil?
+			results.delete_if {|k, movie| !movie.genre.include?(criteria["genre"]) }
+		end
+		if !criteria["title"].nil?
+			results.delete_if {|k, movie| !movie.title.include?(criteria["title"]) }
+		end
+		if !criteria["year"].nil?
+			results.delete_if {|k, movie| !(movie.release_date == criteria["year"]) }
+		end
+		return results.values
+	end
+
+	# returns array of users that matches age, sex, and occupation
+	def find_users(criteria)
+		populate_viewers
+		results = @viewer_hash.dup
+		if !criteria["agerange"].nil?
+			results.delete_if do |k, user|
+				(criteria["agerange"][0] > user.age) || (user.age > criteria["agerange"][1])
+			end
+		end
+		if !criteria["sex"].nil?
+			results.delete_if {|k, user| !(user.sex == criteria["sex"]) }
+		end
+		if !criteria["occupation"].nil?
+			results.delete_if {|k, user| !(user.occupation == criteria["occupation"]) }
+		end
+		return results.values
+	end
+end

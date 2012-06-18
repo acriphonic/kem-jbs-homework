@@ -33,7 +33,7 @@ class MovieSearchDemo
 		@movdat.movie_hash.each do |k, movie|
 			movie_tally[movie] = (movie.raterhash.keys & results).count
 		end
-		results = movie_tally.sort { |v1, v2| v2[1] <=> v1[1] }
+		results = movie_tally.sort_by { |k, v| -v }
 		finish = Time.now
 		puts "Took #{finish - start} seconds"
 		puts results[0..4]
