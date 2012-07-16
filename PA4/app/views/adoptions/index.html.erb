@@ -1,0 +1,29 @@
+<h1>Pet Adoption List</h1>
+
+<table>
+  <tr>
+    <th>Title</th>
+    <th>Created At</th>
+    <th></th>
+    <th></th>
+    <th></th>
+  </tr>
+
+<% @adoptions.each do |adoption| %>
+  <tr>
+    <td><%= adoption.title %></td>
+    <td><%= adoption.created_at %></td>
+    <td><%= link_to 'Show', adoption %></td>
+    <% if current_user?(User.find(adoption.user_id)) %>
+    <td><%= link_to 'Edit', edit_adoption_path(adoption) %></td>
+    <td><%= link_to 'Destroy', adoption, confirm: 'Are you sure?', method: :delete %></td>
+    <% end %>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<% if signed_in? %>
+<%= link_to 'New Adoption', new_adoption_path %>
+<% end %>

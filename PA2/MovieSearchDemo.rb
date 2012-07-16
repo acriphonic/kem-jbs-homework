@@ -17,7 +17,7 @@ class MovieSearchDemo
 		search = Hash.new
 		search["genre"] = genre
 		search["year"] = year
-		results = m.find_movies(search)
+		results = @movdat.find_movies(search)
 		finish = Time.now
 		puts "Took #{finish - start} seconds"
 		puts results
@@ -26,17 +26,17 @@ class MovieSearchDemo
 	def test2(agerange, sex, n)
 		start = Time.now
 		search = Hash.new
-		search["age"] = agerange
+		search["agerange"] = agerange
 		search["sex"] = sex
-		results = m.find_users(search)
+		results = @movdat.find_users(search)
 		movie_tally = Hash.new
-		@movdat.movie_array.each do |movie|
+		@movdat.movie_hash.each do |k, movie|
 			movie_tally[movie] = (movie.raterhash.keys & results).count
 		end
-		movie_tally.sort_by! { |k, v| v }
+		results = movie_tally.sort_by { |k, v| -v }
 		finish = Time.now
 		puts "Took #{finish - start} seconds"
-		puts movie_tally[0..4]
+		puts results[0..4]
 	end
 end
 
@@ -44,6 +44,8 @@ z = MovieSearchDemo.new("ml-100k")
 puts "displaying all sci-fi movies released in 1996"
 z.test1(15, 1996)
 puts "displaying top 5 most viewed movies by college age females"
-z.test2([18, 21], :F, 5)
+z.test2([18, 21], "F", 5)
 puts "displaying top 5 most viewed movies by college age males"
-z.test2([18, 21], :M, 5)
+z.test2([18, 21], "M", 5)
+
+end
