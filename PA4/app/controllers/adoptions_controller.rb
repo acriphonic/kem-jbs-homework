@@ -12,6 +12,16 @@ class AdoptionsController < ApplicationController
     end
   end
 
+  def mobiledownload
+    @adoptions = Adoption.all
+    render json: @adoptions
+  end
+
+  def mobileupload
+    @user = User.find_by_email(params[:email])
+    @adoption = Adoption.new(title: params[:title], descr: params[:descr])
+  end
+
   # GET /adoptions/1
   # GET /adoptions/1.json
   def show
