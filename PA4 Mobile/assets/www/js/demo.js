@@ -1,21 +1,19 @@
-var server='http://localhost:3000';
-
 $("#show").live("pageinit", function(event) {
-	var page = $("#createtourpage");
-	$.get(server+'/mobiledownload.json', {}, function(data, textStatus, jqXHR) {
-		var html='<ul>';
-		for (var i=0; i<data.length; i++) {
-			listing=data[i];
-			html+='<li><b>'+listing.title+'</b><p>'+listing.descr+'</p>';
-			html+='</li>';
+	$.post('http://localhost:3000/mobiledownload.json', {}, function(data, code) {
+		var html ='<ul>';
+		for (var i = 0; i < data.length; i++) {
+			adoption = data[i];
+			html += '<li><b>' + adoption.title + '</b><p>' + adoption.descr + '</p>';
+			html += '</li>';
 		}
 		html+='</ul>';
-		$('#adoptions').html(html);
+		$('#adoptions').html("hello");
 	}, 'jsonp');
+	$('#adoptions').html("hello2");
 });
 
 $("#submit").live('click', function() {
-	$.post(server+'/mobileupload.json', $('#create').serialize(), function(data) {
+	$.post('http://localhost:3000/mobileupload.json', $('#new').serialize(), function(data) {
 		if (data.error) {
 			alert(data.error);
 		} else {
