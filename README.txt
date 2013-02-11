@@ -1,0 +1,1 @@
+This repository contains solutions to programming assignments given during the Justice Brandeis Semester, and mainly use ruby or ruby on rails.
